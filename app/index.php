@@ -14,6 +14,11 @@ require_once("inc/cabecalho.php");
     <a href="incluir.php?tipo=DV"><font size="4">Despesas variáveis</font></a><br>
 </p>
 <p align="center">
+    <b>Lançamentos:</b><br>
+    <a href="incluir.php?tipo=LF"><font size="4">Lançamentos futuros</font></a><br>
+    <a href="periodo.php?tipo=LF"><font size="4">Confirmar lançamentos</font></a><br>
+</p>
+<p align="center">
     <b>Visualizar:</b><br>
     <a href="periodo.php?tipo=P"><font size="4">Planilha de gastos mensais</font></a>
 </p>

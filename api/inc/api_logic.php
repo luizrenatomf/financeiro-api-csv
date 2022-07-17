@@ -4,6 +4,7 @@ class api_logic
 {
     private $endpoint;
     private $params;
+    private $arquivo = 'C:/Users/luizr/Documents/contas.csv';
 
     public function __construct($endpoint, $params = null)
     {
@@ -38,11 +39,7 @@ class api_logic
 
     public function insert_bill() 
     {
-        $dados = $this->params;
-        $dados = "\n" . $this->id() . "," . $dados['descricao'] . "," . $dados['valor'] . "," . $dados['categoria'] . "," . $dados['tipo'] . "," . $dados['data'];
-        $ficheiro = $this->open_csv('../teste.csv','a');
-        fwrite($ficheiro,$dados);
-        fclose($ficheiro);
+        $this->insert_csv();
         return [
             'status' => 'SUCCESS',
             'message' => 'Registro inserido com sucesso.',
@@ -55,7 +52,7 @@ class api_logic
         $this->delete_csv();
         return [
             'status' => 'SUCCESS',
-            'message' => 'Registro deletado com sucesso.',
+            'message' => 'Registro excluído com sucesso.',
             'results' => ''
         ];
     }
@@ -88,13 +85,15 @@ class api_logic
         ];
     }
 
-    private function find_csv() 
+    public function find_csv() 
     {
         $contas = $this->read_csv();     
         if(isset($this->params['data'])) {
             $this->data_filter_csv($contas);   
         }        
-        $resultados = array_filter($contas, function($conta) {            
+
+        $resultados = array_filter($contas, function($conta) {   
+            $tipos = explode(',',$this->params['tipo']);   
             if(isset($this->params['descricao']) && isset($conta))
                 if(!($conta['descricao'] === $this->params['descricao'])) 
                     unset($conta);
@@ -108,7 +107,7 @@ class api_logic
                     unset($conta);
 
             if(isset($this->params['tipo']) && isset($conta))
-                if(!($conta['tipo'] === $this->params['tipo']))
+                if(!in_array($conta['tipo'],$tipos))
                     unset($conta);
             
             if(isset($conta))
@@ -153,32 +152,40 @@ class api_logic
         return $id;
     }
 
-    public function delete_csv()
+    private function delete_csv()
     {
-        $ficheiro = $this->open_csv('../teste.csv','r+');
-        while(!feof($ficheiro)) {
-            $linha = fgetcsv($ficheiro);
+        $ficheiro = $this->open_csv($this->arquivo,'r');
+        while($linha = fgetcsv($ficheiro)) {
             if(!$linha) {
                 continue;
             }
             if($linha[0] == $this->params['id']) {
                 unset($linha);
-            }
+            } else {
+                $registros[] = $linha;
+            }           
         }
         fclose($ficheiro);
-        
-        // reorganizar?
-        
-        return;
+        $ficheiro = $this->open_csv($this->arquivo,'w');
+        foreach($registros as $registro) {
+            fputcsv($ficheiro,$registro);
+        }
+        fclose($ficheiro);
     }
 
+    private function insert_csv()
+    {
+        $dados = array_merge(array('id' => $this->id()),array_slice($this->params,1));
+        $ficheiro = $this->open_csv($this->arquivo,'a');
+        fputcsv($ficheiro,$dados);
+        fclose($ficheiro);
+    }
+    
     private function read_csv()
     {
-        $registros = array();
-        $ficheiro = $this->open_csv('../teste.csv',"r");
+        $ficheiro = $this->open_csv($this->arquivo,"r");
         $cabecalho = fgetcsv($ficheiro);
-        while(!feof($ficheiro)) {
-            $linha = fgetcsv($ficheiro);
+        while($linha = fgetcsv($ficheiro)) {
             if(!$linha) {
                 continue;
             }
@@ -192,7 +199,11 @@ class api_logic
     {
         $ficheiro = fopen($arquivo,$metodo);
         if(!$ficheiro) {
-            die('Erro ao abrir ficheiro.');
+            return [
+                'status' => 'ERROR',
+                'message' => 'Erro ao abrir o ficheiro.',
+                'results' => ''
+            ];    
         }
         return $ficheiro;
     }

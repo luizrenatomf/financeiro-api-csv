@@ -17,6 +17,10 @@ else if($tipo == "DV")
 {
     $titulo = "DESPESAS VARIÁVEIS";
 }
+else if($tipo == "LF")
+{
+    $titulo = "LANÇAMENTOS FUTUROS";
+}
 
 $nomePagina = "Inclusão de $titulo";
 require_once("inc/cabecalho.php");
@@ -29,17 +33,6 @@ $categorias = api_request('categories','POST',array('tipo' => $tipo));
     <input type="hidden" name="tipo" value="<?= $tipo; ?>" checked>
     <input type="hidden" name="acao" value="inserir" checked>
     <div class="container">
-        <div class="row justify-content-center mb-4">
-            <div class="form-group col-md-4">
-                <label class="form-check-label" for="descricao">Descricao: </label>
-                <input class="form-control" type="text" name="descricao" id="descricao" maxlength="30" autocomplete="off">
-            </div>
-            <div class="form-group col-md-2">
-                <label class="form-check-label" for="valor">Valor: </label>
-                <input class="form-control" type="text" name="valor" id="valor" maxlength="10" autocomplete="off">
-            </div>
-        </div>
-
         <div class="row justify-content-center mb-4">
             <div class="col-md-4">
                 <div class="form-check form-check-inline">
@@ -64,34 +57,18 @@ $categorias = api_request('categories','POST',array('tipo' => $tipo));
                 </div>        
             </div>
         </div>
-        <div class="row justify-content-center mb-5">
-            <div class="form-group col-md-1">
-                <label class="form-check-label" for="dia">Dia: </label>
-                <input class="form-control" type="text" name="dia" id="dia" value="<?= date("d",time()); ?>">
+        <div class="row justify-content-center mb-4">
+            <div class="form-group col-md-4">
+                <label class="form-check-label" for="descricao">Descricao: </label>
+                <input class="form-control" type="text" name="descricao" id="descricao" maxlength="30" autocomplete="off">
             </div>
             <div class="form-group col-md-2">
-                <label class="form-check-label" for="mes">Mês: </label>
-                <select class="form-select" name="mes" id="mes">
-                <?php
-                    $meses = array("Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez");
-                    foreach($meses as $key => $mes)
-                    {
-                        $key++;
-                        if($key == date("m",time()))
-                        {
-                            echo "<option value=\"$key\" selected>$mes</option>";
-                        }
-                        else
-                        {
-                            echo "<option value=\"$key\">$mes</option>";
-                        }
-                    }
-                ?>
-                </select>
+                <label class="form-check-label" for="valor">Valor: </label>
+                <input class="form-control" type="number" format="currency" precision="2" name="valor" id="valor" maxlength="10" autocomplete="off">
             </div>
             <div class="form-group col-md-2">
-                <label class="form-check-label" for="ano">Ano: </label>
-                <input class="form-control" type="text" name="ano" id="ano" value="<?= date("Y",time()); ?>">
+                <label class="form-check-label" for="data">Data: </label>
+                <input class="form-control" type="date" name="data" id="data" autocomplete="off" value="<?= date('Y-m-d'); ?>">
             </div>
         </div>
         <div class="row justify-content-center">
@@ -109,40 +86,28 @@ $categorias = api_request('categories','POST',array('tipo' => $tipo));
 
 <script type="text/javascript" language="javascript">
     function valida_dados(formulario) {
+        if(formulario.categoria_nova.value == "" && 
+            formulario.categoria[0].checked == true)
+        {
+            alert("Digite uma categoria válida.");
+            formulario.categoria_nova.focus();
+            return false;
+        }
         if(formulario.descricao.value == "")
         {
-            alert("Você não digitou a descrição.");
+            alert("Digite uma descrição válida.");
             formulario.descricao.focus();
             return false;
         }
         if(formulario.valor.value == "")
         {
-            alert("Você não digitou o valor.");
+            alert("Digite um valor válido.");
             formulario.valor.focus();
             return false;
         }
-        if(formulario.categoria_nova.value == "" && 
-            formulario.categoria[0].checked == true)
+        if(formulario.data.value.length == "")
         {
-            alert("Você não digitou a categoria.");
-            formulario.categoria_nova.focus();
-            return false;
-        }
-        if(formulario.dia.value == "")
-        {
-            alert("Digite um dia válido.");
-            formulario.dia.focus();
-            return false;
-        }
-        if(formulario.mes.value == "")
-        {
-            alert("Selecione um mês válido.");
-            formulario.mes.focus();
-            return false;
-        }
-        if(formulario.ano.value.length < 4)
-        {
-            alert("Digite o ano com quatro dígitos.");
+            alert("Digite uma data válida.");
             formulario.ano.focus();
             return false;
         }
