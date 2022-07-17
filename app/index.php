@@ -1,22 +1,29 @@
 <?php 
 
-require_once("inc/config.php");
-require_once("inc/api_functions.php");
+$nomePagina = "Home";
+require_once("inc/cabecalho.php");
 
-$variables = [
-    "id" => 2,
-    "descricao" => "Supermercado",
-    "valor" => 209.71,
-    "tipo" => "DF",
-    "data" => "10/07/2022"
-];
+?>
 
-echo '<pre>';
+<p align="center">Seja bem vindo! Escolha a opção desejada:</p>
+<p align="center">
+    <b>Incluir:</b><br>
+    <a href="incluir.php?tipo=RF"><font size="4">Receitas fixas</font></a><br>
+    <a href="incluir.php?tipo=RV"><font size="4">Receitas variáveis</font></a><br>
+    <a href="incluir.php?tipo=DF"><font size="4">Despesas fixas</font></a><br>
+    <a href="incluir.php?tipo=DV"><font size="4">Despesas variáveis</font></a><br>
+</p>
+<p align="center">
+    <b>Visualizar:</b><br>
+    <a href="periodo.php?tipo=P"><font size="4">Planilha de gastos mensais</font></a>
+</p>
+<p align="center">
+    <b>Excluir:</b><br>
+    <a href="periodo.php?tipo=E"><font size="4">Excluir receitas e despesas</font></a><br>
+</p>
 
-// $results = api_request('status', 'GET', $variables);
-// $results = api_request('all_bills','GET');
-// $results = api_request('insert_bill','POST',$variables);
-// $results = api_request('find_csv','POST',array('id' => 2));
-// $results = api_request('find_bills','POST',array('descricao' => 'SUPERMERCADO', 'valor' => 130.99));
-$results = api_request('data_filter_csv','POST',array('data' => '14/08/1993'));
-print_r($results);
+<?php
+
+require_once("inc/rodape.php");
+
+?>

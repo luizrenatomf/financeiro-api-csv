@@ -39,7 +39,7 @@ class api_logic
     public function insert_bill() 
     {
         $dados = $this->params;
-        $dados = "\n" . $dados['id'] . "," . $dados['descricao'] . "," . $dados['valor'] . "," . $dados['tipo'] . "," . $dados['data'];
+        $dados = "\n" . $this->id() . "," . $dados['descricao'] . "," . $dados['valor'] . "," . $dados['categoria'] . "," . $dados['tipo'] . "," . $dados['data'];
         $ficheiro = $this->open_csv('../teste.csv','a');
         fwrite($ficheiro,$dados);
         fclose($ficheiro);
@@ -47,6 +47,16 @@ class api_logic
             'status' => 'SUCCESS',
             'message' => 'Registro inserido com sucesso.',
             'results' => $this->params
+        ];
+    }
+
+    public function delete_bill()
+    {
+        $this->delete_csv();
+        return [
+            'status' => 'SUCCESS',
+            'message' => 'Registro deletado com sucesso.',
+            'results' => ''
         ];
     }
 
@@ -60,36 +70,106 @@ class api_logic
         ];
     }
 
-    private function find_csv() 
+    public function categories()
     {
-        $contas = $this->read_csv();        
-        $resultados = array_filter($contas, function($conta) {
-            $contaPrevia = null;
-            $caracteristicas = ['descricao', 'valor', 'tipo', 'data'];
-
-            foreach($caracteristicas as $c) {
-                if(isset($this->params[$c])) {
-                    if($this->params[$c] == $conta[$c]) {
-                        $contaPrevia = $conta;
-                    } else {
-                        $contaPrevia = null;
-                    }
+        $categorias = array();
+        $contas = $this->read_csv();
+        foreach($contas as $conta) {
+            if(isset($this->params['tipo']) && $this->params['tipo'] == $conta['tipo']) {
+                if(!in_array($conta['categoria'],$categorias)) {
+                    $categorias[] = $conta['categoria'];
                 }
             }
+        }
+        return [
+            'status' => 'SUCCESS',
+            'message' => '',
+            'results' => $categorias
+        ];
+    }
 
-            if(!is_null($contaPrevia)) {
-                return $contaPrevia;
-            } 
+    private function find_csv() 
+    {
+        $contas = $this->read_csv();     
+        if(isset($this->params['data'])) {
+            $this->data_filter_csv($contas);   
+        }        
+        $resultados = array_filter($contas, function($conta) {            
+            if(isset($this->params['descricao']) && isset($conta))
+                if(!($conta['descricao'] === $this->params['descricao'])) 
+                    unset($conta);
+            
+            if(isset($this->params['valor']) && isset($conta))
+                if(!($conta['valor'] === $this->params['valor']))
+                    unset($conta);
+            
+            if(isset($this->params['categoria']) && isset($conta))
+                if(!($conta['categoria']) === $this->params['categoria'])
+                    unset($conta);
+
+            if(isset($this->params['tipo']) && isset($conta))
+                if(!($conta['tipo'] === $this->params['tipo']))
+                    unset($conta);
+            
+            if(isset($conta))
+                return $conta;
         }, ARRAY_FILTER_USE_BOTH);
-
         return $resultados;
     }
 
-    public function data_filter_csv()
+    private function data_filter_csv(&$contas)
     {        
-        if(isset($this->params['data2']) && is_null($this->params['data2'])) {
+        $contas = $this->read_csv();     
+        if(!isset($this->params['data']) || $this->params['data'] == '') {
+            die('Data inválida');
+        }
+        $data = new DateTime(str_replace('/','-',$this->params['data']));
+        
+        if(!isset($this->params['data2']) || $this->params['data2'] == '') {
             $this->params['data2'] = $this->params['data'];
         }
+        $data2 = new DateTime(str_replace('/','-',$this->params['data2']));
+
+        if($data2 < $data) {
+            $dataTemp = $data;
+            $data = $data2;
+            $data2 = $dataTemp;
+            unset($dataTemp);
+        }
+
+        foreach($contas as $key => $conta) {
+            $dataConta = new DateTime(str_replace('/','-',$conta['data']));
+            if(!($dataConta >= $data && $dataConta <= $data2)) {                
+                unset($contas[$key]);
+            }
+        }
+    }
+
+    private function id()
+    {
+        $contas = $this->read_csv();
+        $conta = array_slice($contas,-1,1);
+        $id = reset($conta)['id'] + 1;
+        return $id;
+    }
+
+    public function delete_csv()
+    {
+        $ficheiro = $this->open_csv('../teste.csv','r+');
+        while(!feof($ficheiro)) {
+            $linha = fgetcsv($ficheiro);
+            if(!$linha) {
+                continue;
+            }
+            if($linha[0] == $this->params['id']) {
+                unset($linha);
+            }
+        }
+        fclose($ficheiro);
+        
+        // reorganizar?
+        
+        return;
     }
 
     private function read_csv()
