@@ -37,6 +37,16 @@ class api_logic
         ];      
     }
 
+    public function update_bill()
+    {
+        $this->update_csv();
+        return [
+            'status' => 'SUCCESS',
+            'message' => 'Registro atualizado com sucesso.',
+            'results' => ''
+        ];
+    }
+
     public function insert_bill() 
     {
         $this->insert_csv();
@@ -69,12 +79,21 @@ class api_logic
 
     public function categories()
     {
-        $categorias = array();
         $contas = $this->read_csv();
-        foreach($contas as $conta) {
-            if(isset($this->params['tipo']) && $this->params['tipo'] == $conta['tipo']) {
-                if(!in_array($conta['categoria'],$categorias)) {
-                    $categorias[] = $conta['categoria'];
+        if(isset($this->params['tipo'])) {
+            $categorias = array();
+            foreach($contas as $conta) {
+                if($this->params['tipo'] == $conta['tipo']) {
+                    if(!in_array($conta['categoria'],$categorias)) {
+                        $categorias[] = $conta['categoria'];
+                    }
+                }
+            }
+        } else {
+            $categorias = ['RF' => array(),'RV' => array(),'DF' => array(),'DV' => array(),'LF' => array()];
+            foreach($contas as $conta) {
+                if(!in_array($conta['categoria'],$categorias[$conta['tipo']])) {
+                    $categorias[$conta['tipo']][] = $conta['categoria'];
                 }
             }
         }
@@ -85,9 +104,46 @@ class api_logic
         ];
     }
 
-    public function find_csv() 
+    public function update_csv()
     {
-        $contas = $this->read_csv();     
+        $ficheiro = $this->open_csv($this->arquivo,'r');
+        while($linha = fgetcsv($ficheiro)) {
+            if(!$linha) {
+                continue;
+            }
+            if($linha[0] == $this->params['id']) {
+                if(isset($this->params['descricao'])) 
+                    $linha[1] = $this->params['descricao'];
+                if(isset($this->params['valor'])) 
+                    $linha[2] = $this->params['valor'];
+                if(isset($this->params['categoria'])) 
+                    $linha[3] = $this->params['categoria'];
+                if(isset($this->params['tipo'])) 
+                    $linha[4] = $this->params['tipo'];
+                if(isset($this->params['data']))
+                    $linha[5] = $this->params['data'];                
+                $registros[] = $linha;
+            } else {
+                $registros[] = $linha;
+            }           
+        }
+        fclose($ficheiro);
+        $ficheiro = $this->open_csv($this->arquivo,'w');
+        foreach($registros as $registro) {
+            fputcsv($ficheiro,$registro);
+        }
+        fclose($ficheiro);
+    }
+
+    private function find_csv() 
+    {
+        $contas = $this->read_csv();   
+        
+        if(isset($this->params['id'])) {
+            $conta = $this->id_filter_csv();
+            return $conta;
+        }
+
         if(isset($this->params['data'])) {
             $this->data_filter_csv($contas);   
         }        
@@ -140,6 +196,16 @@ class api_logic
             $dataConta = new DateTime(str_replace('/','-',$conta['data']));
             if(!($dataConta >= $data && $dataConta <= $data2)) {                
                 unset($contas[$key]);
+            }
+        }
+    }
+
+    private function id_filter_csv()
+    {
+        $contas = $this->read_csv();
+        foreach($contas as $conta) {
+            if($conta['id'] == $this->params['id']) {
+                return $conta;
             }
         }
     }

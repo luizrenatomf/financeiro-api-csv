@@ -73,7 +73,7 @@ $categorias = api_request('categories','POST',array('tipo' => $tipo));
         </div>
         <div class="row justify-content-center">
             <div class="form-group col-md-1">
-                <input class="btn btn-primary" type="button" value="&nbsp;Enviar&nbsp;" name="enviar" onclick="return valida_dados(formulario);">
+                <input class="btn btn-primary" type="button" value="&nbsp;Enviar&nbsp;" name="enviar" onclick="javascript:valida_dados(formulario) && gravar()">
             </div>
             <div class="form-group col-md-1">
                 <input class="btn btn-secondary" type="reset" value="&nbsp;Limpar&nbsp;" name="limpar" id="limpar">
@@ -111,7 +111,7 @@ $categorias = api_request('categories','POST',array('tipo' => $tipo));
             formulario.ano.focus();
             return false;
         }
-        gravar();
+        return true;
     }
 
     function gravar() 

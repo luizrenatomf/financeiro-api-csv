@@ -16,6 +16,11 @@ else if($tipo == "P")
     $nomePagina = "Planilha de gastos mensais";
     $form       = "planilha.php";
 }
+else if($tipo == "LF")
+{
+    $nomePagina = "Lançamentos futuros";
+    $form       = "lancamento.php";
+}
 
 require_once("inc/cabecalho.php");
 
@@ -38,7 +43,7 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
             <button type="submit" class="btn btn-primary col-sm-2 col-xl-2" id="visualizar" onclick="return verificaCampos(formulario);">Visualizar</a>
         </div>
         <?php
-        if($tipo == 'V') { ?>
+        if($tipo == 'V' || $tipo == 'E') { ?>
         <div class="justify-content-center">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="checkbox" value="RF" name="RF" id="RF" checked>
