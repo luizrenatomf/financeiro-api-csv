@@ -10,8 +10,7 @@ $meses = array("Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov"
 
 $data = $_POST['data'] ?: '';
 $data2 = $_POST['data2'] ?: '';
-
-$rows = api_request('find_bills','GET',array('data' => $data, 'data2' => $data2));
+$rows = api_request('find_bills','POST',array('data' => $data, 'data2' => $data2, 'tipo' => 'RF,RV,DF,DV'));
 
 if(empty($rows)) {
     die("Registros não encontrados.");

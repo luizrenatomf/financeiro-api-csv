@@ -46,20 +46,24 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
         if($tipo == 'V' || $tipo == 'E') { ?>
         <div class="justify-content-center">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="RF" name="RF" id="RF" checked>
+                <input class="form-check-input" type="checkbox" value="RF" name="RF" id="RF">
                 <label class="form-check-label" for="RF">Receitas Fixas</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="RV" name="RV" id="RV" checked>
+                <input class="form-check-input" type="checkbox" value="RV" name="RV" id="RV">
                 <label class="form-check-label" for="RV">Receitas Variáveis</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="DF" name="DF" id="DF" checked>
+                <input class="form-check-input" type="checkbox" value="DF" name="DF" id="DF">
                 <label class="form-check-label" for="DF">Despesas Fixas</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="DV" name="DV" id="DV" checked>
+                <input class="form-check-input" type="checkbox" value="DV" name="DV" id="DV">
                 <label class="form-check-label" for="DV">Despesas Variáveis</label>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="selecionarTodos" onchange="javascript:selecionar()"/>
+                <label class="form-check-label" for="selecionarTodos">Selecionar todos</label>
             </div>
         </div>  
         <?php } ?>
@@ -79,6 +83,25 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
             return false;
         }
         return true;
+    }
+
+    function selecionar() {
+        inputRf = document.getElementById("RF");
+        inputRv = document.getElementById("RV");
+        inputDf = document.getElementById("DF");
+        inputDv = document.getElementById("DV");
+
+        if(inputRf.hasAttribute('checked') || inputRv.hasAttribute('checked') || inputDf.hasAttribute('checked') || inputDv.hasAttribute('checked')) {
+            inputRf.removeAttribute('checked');                        
+            inputRv.removeAttribute('checked');                        
+            inputDf.removeAttribute('checked');                        
+            inputDv.removeAttribute('checked');                        
+        } else {
+            inputRf.setAttribute('checked',true);
+            inputRv.setAttribute('checked',true);
+            inputDf.setAttribute('checked',true);
+            inputDv.setAttribute('checked',true);
+        }
     }
 </script>
 

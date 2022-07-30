@@ -104,7 +104,7 @@ class api_logic
         ];
     }
 
-    public function update_csv()
+    private function update_csv()
     {
         $ficheiro = $this->open_csv($this->arquivo,'r');
         while($linha = fgetcsv($ficheiro)) {
@@ -179,7 +179,7 @@ class api_logic
             die('Data inválida');
         }
         $data = new DateTime(str_replace('/','-',$this->params['data']));
-        
+
         if(!isset($this->params['data2']) || $this->params['data2'] == '') {
             $this->params['data2'] = $this->params['data'];
         }
