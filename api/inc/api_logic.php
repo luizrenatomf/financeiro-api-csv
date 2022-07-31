@@ -211,10 +211,9 @@ class api_logic
     }
 
     private function id()
-    {
-        $contas = $this->read_csv();
-        $conta = array_slice($contas,-1,1);
-        $id = reset($conta)['id'] + 1;
+    {        
+        $id = intval(end($this->read_csv())['id']);
+        $this->backupDados($id);
         return $id;
     }
 
@@ -247,6 +246,16 @@ class api_logic
         fclose($ficheiro);
     }
     
+    private function backupDados($id)
+    {        
+        if($id % 10 == 0) {
+            if(!is_dir('./../dados')) {
+                mkdir('./../dados');
+            }
+            copy($this->arquivo,'./../dados/contas.csv');
+        }
+    }
+
     private function read_csv()
     {
         $ficheiro = $this->open_csv($this->arquivo,"r");
