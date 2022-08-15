@@ -30,7 +30,7 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
 
 ?>
 
-<form action="<?= $form; ?>" method="POST" name="formulario" id="formulario">
+<form action="" method="POST" name="formulario" id="formulario">
     <p align="center">Selecione o período:</p>
     <div class="container">
         <div class="row justify-content-center gx-1 mb-4">
@@ -68,7 +68,12 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
         </div>  
         <?php } ?>
     </div>
+    <input type="hidden" id="item" name="item" value="">
 </form>
+
+<br><hr><br>
+
+<div id="conteudo"></div>
 
 <script>
     function verificaCampos(formulario) {
@@ -103,8 +108,57 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
             inputDv.setAttribute('checked',true);
         }
     }
-</script>
 
+    document.getElementById("visualizar").addEventListener('click',function(evento) {    
+        evento.preventDefault();    
+        var dados = $("#formulario").serialize();
+        $.ajax ({
+            type: "POST",
+            dataType: "json",
+            url: "registros.php",
+            async: true,
+            data: dados,
+            success: function(retorno) {
+                $("#conteudo").html('');
+                $("#conteudo").append(retorno);
+            },
+            error: function(jqXHR, textStatus, errorThrown, retorno) {
+                $("#conteudo").append(retorno + '<br>' + textStatus);
+            }
+        });
+    });
+
+    function alterar(id) {
+       window.location.assign("alterar.php?id="+id);
+    }
+
+    function ordenar(item) {
+        var itens = $("#item").val() != '' ? $("#item").val().split(',') : [];
+        if(itens.indexOf(item) > -1) {            
+            itens.splice($.inArray(item,itens),1);
+        } else {
+            itens.push(item);
+        }
+        $("#item").val(itens.toString());
+
+        var dados = $("#formulario").serialize();
+        $.ajax ({
+            type: "POST",
+            dataType: "json",
+            url: "registros.php",
+            async: true,
+            data: dados,
+            success: function(retorno) {
+                // console.log(retorno)
+                $("#conteudo").html('');
+                $("#conteudo").append(retorno);
+            },
+            error: function(jqXHR, textStatus, errorThrown, retorno) {
+                $("#conteudo").append(retorno + '<br>' + textStatus);
+            }
+        });
+    }
+</script>
 <?php
 
 require_once("inc/rodape.php");
