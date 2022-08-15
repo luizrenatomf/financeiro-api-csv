@@ -83,7 +83,7 @@ $categorias = api_request('categories','POST',array('tipo' => $registro['tipo'])
     </div>
 </form>
 <hr>
-<p align="center"><a href="index.php">Voltar</a></p>
+<p align="center"><a href="javascript:window.history.back();">Voltar</a></p>
 
 <script type="text/javascript" language="javascript">
     

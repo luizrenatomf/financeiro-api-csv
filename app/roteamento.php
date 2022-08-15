@@ -57,4 +57,15 @@ if($_POST['acao'] === 'categorias') {
   echo json_encode($results);
 }
 
+if($_POST['acao'] === 'ordenar') {
+
+  $item = $_POST['item'];
+  $data = $_POST['data'];
+  $data2 = $_POST['data2'];
+  $tipos = $_POST['tipo'];
+
+  $results = api_request('find_bills','POST',array('item' => $item, 'data' => $data, 'data2' => $data2, 'tipo' => $tipos));
+  echo json_encode($results);
+}
+
 ?>

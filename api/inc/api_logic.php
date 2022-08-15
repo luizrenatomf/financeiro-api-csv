@@ -149,7 +149,10 @@ class api_logic
         }        
 
         $resultados = array_filter($contas, function($conta) {   
-            $tipos = explode(',',$this->params['tipo']);   
+            if(isset($this->params['tipo'])) {
+                $tipos = explode(',',$this->params['tipo']);   
+            }
+
             if(isset($this->params['descricao']) && isset($conta))
                 if(!($conta['descricao'] === $this->params['descricao'])) 
                     unset($conta);
@@ -169,12 +172,16 @@ class api_logic
             if(isset($conta))
                 return $conta;
         }, ARRAY_FILTER_USE_BOTH);
+
+        if(isset($this->params['item'])) {
+            $this->order_results($resultados);
+        }
+
         return $resultados;
     }
 
     private function data_filter_csv(&$contas)
     {        
-        $contas = $this->read_csv();     
         if(!isset($this->params['data']) || $this->params['data'] == '') {
             die('Data inválida');
         }
@@ -196,6 +203,29 @@ class api_logic
             $dataConta = new DateTime(str_replace('/','-',$conta['data']));
             if(!($dataConta >= $data && $dataConta <= $data2)) {                
                 unset($contas[$key]);
+            }
+        }
+    }
+
+    private function order_results(&$contas)
+    {
+        if($this->params['item'] == 'tipo') {
+            if(isset($this->params['tipo'])) {
+                $tipos_filter = explode(',',$this->params['tipo']);
+            } else {
+                $tipos_filter = array('RF','RV','DF','DV');
+            }
+
+            foreach($contas as $conta) {
+                if(in_array($conta['tipo'],$tipos_filter)) {
+                    $resultado[$conta['tipo']][] = $conta;
+                }
+            }
+            
+            $contas = array();
+            foreach($tipos_filter as $filter) {
+                if(isset($resultado[$filter]))
+                    $contas = array_merge($contas,$resultado[$filter]);
             }
         }
     }
