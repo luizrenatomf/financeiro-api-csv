@@ -30,7 +30,7 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
 
 ?>
 
-<form action="" method="POST" name="formulario" id="formulario">
+<form action="" method="POST" name="formulario" id="formulario">    
     <p align="center">Selecione o período:</p>
     <div class="container">
         <div class="row justify-content-center gx-1 mb-4">
@@ -69,96 +69,15 @@ $ultimoDia = date('t',mktime(0,0,$mes,'01',$ano));
         <?php } ?>
     </div>
     <input type="hidden" id="item" name="item" value="">
+    <input type="hidden" name="url" id="url" value="<?=$form;?>">
 </form>
 
 <br><hr><br>
 
 <div id="conteudo"></div>
 
-<script>
-    function verificaCampos(formulario) {
-        if(formulario.data.value == '') {
-            alert("Informe uma data válida.");
-            formulario.data.focus();
-            return false;
-        }
-        if(formulario.data.value == '') {
-            alert("Informe uma data válida.");
-            formulario.data.focus();
-            return false;
-        }
-        return true;
-    }
+<script src="./js/script.js"></script>
 
-    function selecionar() {
-        inputRf = document.getElementById("RF");
-        inputRv = document.getElementById("RV");
-        inputDf = document.getElementById("DF");
-        inputDv = document.getElementById("DV");
-
-        if(inputRf.hasAttribute('checked') || inputRv.hasAttribute('checked') || inputDf.hasAttribute('checked') || inputDv.hasAttribute('checked')) {
-            inputRf.removeAttribute('checked');                        
-            inputRv.removeAttribute('checked');                        
-            inputDf.removeAttribute('checked');                        
-            inputDv.removeAttribute('checked');                        
-        } else {
-            inputRf.setAttribute('checked',true);
-            inputRv.setAttribute('checked',true);
-            inputDf.setAttribute('checked',true);
-            inputDv.setAttribute('checked',true);
-        }
-    }
-
-    document.getElementById("visualizar").addEventListener('click',function(evento) {    
-        evento.preventDefault();    
-        var dados = $("#formulario").serialize();
-        $.ajax ({
-            type: "POST",
-            dataType: "json",
-            url: "registros.php",
-            async: true,
-            data: dados,
-            success: function(retorno) {
-                $("#conteudo").html('');
-                $("#conteudo").append(retorno);
-            },
-            error: function(jqXHR, textStatus, errorThrown, retorno) {
-                $("#conteudo").append(retorno + '<br>' + textStatus);
-            }
-        });
-    });
-
-    function alterar(id) {
-       window.location.assign("alterar.php?id="+id);
-    }
-
-    function ordenar(item) {
-        var itens = $("#item").val() != '' ? $("#item").val().split(',') : [];
-        if(itens.indexOf(item) > -1) {            
-            itens.splice($.inArray(item,itens),1);
-        } else {
-            itens.push(item);
-        }
-        $("#item").val(itens.toString());
-
-        var dados = $("#formulario").serialize();
-        $.ajax ({
-            type: "POST",
-            dataType: "json",
-            url: "registros.php",
-            async: true,
-            data: dados,
-            success: function(retorno) {
-                // console.log(retorno)
-                $("#conteudo").html('');
-                $("#conteudo").append(retorno);
-            },
-            error: function(jqXHR, textStatus, errorThrown, retorno) {
-                $("#conteudo").append(retorno + '<br>' + textStatus);
-            }
-        });
-    }
-</script>
 <?php
 
 require_once("inc/rodape.php");

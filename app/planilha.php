@@ -325,8 +325,4 @@ if(empty($rows)) {
     ";
 }
 
-echo $html;
-
-?>
-
-<a href="periodo.php?tipo=P">Voltar</a>
+echo json_encode($html);

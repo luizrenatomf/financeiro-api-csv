@@ -128,8 +128,7 @@ $categorias = api_request('categories','POST',array('tipo' => $tipo));
                     $("#limpar").click();
                     $("#mensagem").append("<div class=\"alert alert-success\" role=\"alert\"><h6 align=\"center\">"+retorno.data.message+"</h6></div>");
                     window.setTimeout(function(){$("#mensagem").empty()},3000)
-                }
-                else {
+                } else {
                     $("#mensagem").append("<div class=\"alert alert-danger\" role=\"alert\"><h6 align=\"center\">Erro ao incluir.</h6></div>");
                     window.setTimeout(function(){$("#mensagem").empty()},3000)
                 }

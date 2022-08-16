@@ -35,10 +35,11 @@ require_once("inc/api_functions.php");
             Incluir
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="incluir.php?acao=1&tipo=RF">Receitas fixas</a></li>
-            <li><a class="dropdown-item" href="incluir.php?acao=1&tipo=RV">Receitas variáveis</a></li>
-            <li><a class="dropdown-item" href="incluir.php?acao=1&tipo=DF">Despesas fixas</a></li>
-            <li><a class="dropdown-item" href="incluir.php?acao=1&tipo=DV">Despesas variáveis</a></li>
+            <li><a class="dropdown-item" href="incluir.php?tipo=RF">Receitas fixas</a></li>
+            <li><a class="dropdown-item" href="incluir.php?tipo=RV">Receitas variáveis</a></li>
+            <li><a class="dropdown-item" href="incluir.php?tipo=DF">Despesas fixas</a></li>
+            <li><a class="dropdown-item" href="incluir.php?tipo=DV">Despesas variáveis</a></li>
+            <li><a class="dropdown-item" href="incluir.php?tipo=LF">Lançamentos futuros</a></li>
           </ul>
         </li>
         <li class="nav-item">
