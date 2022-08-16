@@ -240,13 +240,6 @@ class api_logic
         }
     }
 
-    private function id()
-    {        
-        $id = intval(end($this->read_csv())['id']);
-        $this->backupDados($id);
-        return $id;
-    }
-
     private function delete_csv()
     {
         $ficheiro = $this->open_csv($this->arquivo,'r');
@@ -284,6 +277,14 @@ class api_logic
             }
             copy($this->arquivo,'./../dados/contas.csv');
         }
+    }
+
+    private function id()
+    {        
+        $id = $this->read_csv();
+        $id = intval(end($id)['id']) + 1;
+        $this->backupDados($id);
+        return $id;
     }
 
     private function read_csv()
