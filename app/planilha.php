@@ -131,8 +131,8 @@ if(empty($rows)) {
     $colunas_html = $numero_colunas + 1;
 
     $html = "
-    <div align=\"table-responsive\">
-        <table class=\"table table-sm table-hover\" border=\"1\">
+    <div align=\"table-responsive\" style=\"width:95%; text-align:center; margin: 0 auto;\">
+        <table class=\"table table-sm table-hover\" border=\"2\">
             <thead>
                 <tr>
                     <td></td>
@@ -147,11 +147,17 @@ if(empty($rows)) {
                 </tr>
             </thead>    
             <tr>
-                <td colspan=\"<?= $colunas_html; ?>\" bgcolor=\"#F5F5F5\">
+                <td colspan=\"<?= $colunas_html; ?>\">
                     <b>RECEITAS FIXAS</b>
                 </td>
-            </tr>
     ";        
+
+    foreach($array_datas as $data)
+    {
+        $html .= '<td></td>';
+    }
+
+    $html .= "</tr>";
 
     for($i = 0; $i < sizeof($RF); $i++)
     {
@@ -178,8 +184,14 @@ if(empty($rows)) {
                 <td colspan=\"<?= $colunas_html; ?>\" bgcolor=\"#F5F5F5\">
                     <b>RECEITAS VARIÁVEIS</b>
                 </td>
-            </tr>
     ";
+
+    foreach($array_datas as $data)
+    {
+        $html .= '<td></td>';
+    }
+
+    $html .= "</tr>";
 
     for($i = 0; $i < sizeof($RV); $i++)
     {
@@ -223,8 +235,14 @@ if(empty($rows)) {
             </tr>
             <tr>
                 <td colspan=\"<?= $colunas_html; ?>\" bgcolor=\"#F5F5F5\"><b>DESPESAS FIXAS</b></td>
-            </tr>
     ";        
+
+    foreach($array_datas as $data)
+    {
+        $html .= '<td></td>';
+    }
+
+    $html .= "</tr>";
 
     for($i = 0; $i < sizeof($DF); $i++)
     {
@@ -249,8 +267,14 @@ if(empty($rows)) {
     $html .= "
             <tr>
                 <td colspan=\"<?= $colunas_html; ?>\" bgcolor=\"#F5F5F5\"><b>DESPESAS VARIÁVEIS</b></td>
-            </tr>
     ";
+
+    foreach($array_datas as $data)
+    {
+        $html .= '<td></td>';
+    }
+
+    $html .= "</tr>";
 
     for($i = 0; $i < sizeof($DV); $i++)
     {
